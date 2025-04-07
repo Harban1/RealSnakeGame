@@ -57,6 +57,10 @@ class Snake:
         self.snakebody.insert(0, newHead)
         self.snakebody.pop()
 
+    def grow(self):
+
+        self.snakebody.insert(0, list(head))
+
 bob = Snake(snakehead, "left", 365, 265)
 
 # class Food:
@@ -101,13 +105,15 @@ while RUNNING:
 
     if bob.x == foodSpawn[0] and bob.y == foodSpawn[1]:
         score += 1
+        bob.grow()
 
-    if bob.x not in range(0, WINWIDTH) and bob.y not in range(0, WINHEIGHT):
+    if bob.x not in range(0, WINWIDTH) or bob.y not in range(0, WINHEIGHT):
         RUNNING = False
 
 
     GAMEWIN.fill((255, 255, 255))
     pygame.draw.rect(GAMEWIN, green, pygame.Rect(bob.x, bob.y, snakeBoxSize, snakeBoxSize))
+    pygame.draw.rect(GAMEWIN, red, pygame.Rect(foodSpawn[0], foodSpawn[1], snakeBoxSize, snakeBoxSize))
     pygame.display.update()
 
     fpsController.tick(difficulty)
