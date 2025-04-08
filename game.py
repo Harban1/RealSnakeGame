@@ -16,7 +16,7 @@ fpsController = pygame.time.Clock()
 WINWIDTH = 800
 WINHEIGHT = 600
 
-foodSpawn = [(random.randrange(1, (WINWIDTH//snakeBoxSize)*snakeBoxSize)), (random.randrange(1, (WINHEIGHT//snakeBoxSize)*snakeBoxSize)) - 1]
+foodSpawn = [(random.randrange(1, (WINWIDTH//snakeBoxSize)*snakeBoxSize))  , (random.randrange(1, (WINHEIGHT//snakeBoxSize)*snakeBoxSize))]
 foodSpawnCondition = True
 
 GAMEWIN = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
