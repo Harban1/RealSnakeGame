@@ -5,18 +5,18 @@ pygame.init()
 
 score = 0 
 
-snakeBoxSize = 10
+snakeBoxSize = 25
 
 snakehead = (0,0)
 
-difficulty = 10
+difficulty = 4
 
 fpsController = pygame.time.Clock()
 
 WINWIDTH = 800
 WINHEIGHT = 600
 
-foodSpawn = [(random.randrange(1, (WINWIDTH//snakeBoxSize)*snakeBoxSize)), (random.randrange(1, (WINHEIGHT//snakeBoxSize)*snakeBoxSize))]
+foodSpawn = [(random.randrange(1, (WINWIDTH//snakeBoxSize)*snakeBoxSize)), (random.randrange(1, (WINHEIGHT//snakeBoxSize)*snakeBoxSize)) - 1]
 foodSpawnCondition = True
 
 GAMEWIN = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
