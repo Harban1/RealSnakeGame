@@ -121,7 +121,7 @@ while RUNNING:
     
     head = bob.snakebody[0]
 
-    if food == head:
+    if food[0] == head:
         score += 1
         bob.grow()
         food = spawnfood() 
