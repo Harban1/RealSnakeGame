@@ -7,17 +7,19 @@ score = 0
 
 snakeBoxSize = 25
 
-snakehead = (0,0)
-
-difficulty = 4
+difficulty = 10
 
 fpsController = pygame.time.Clock()
 
 WINWIDTH = 800
 WINHEIGHT = 600
 
-foodSpawn = [(random.randrange(1, (WINWIDTH//snakeBoxSize)*snakeBoxSize))  , (random.randrange(1, (WINHEIGHT//snakeBoxSize)*snakeBoxSize))]
-foodSpawnCondition = True
+def spawnfood():
+    foodSpawn = [(random.randrange(0, (WINWIDTH//snakeBoxSize)*snakeBoxSize))  , (random.randrange(0, (WINHEIGHT//snakeBoxSize)*snakeBoxSize))]
+    return foodSpawn
+
+food = spawnfood()
+
 
 GAMEWIN = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
 pygame.display.set_caption("Snake Game")
@@ -28,40 +30,53 @@ red = (255, 0, 0)
 direction = "left"
 
 class Snake:
-    def __init__(self, snakebody, direction, x, y):
-        self.snakebody = [snakebody]
+    def __init__(self, direction):
         self.direction = direction
-        self.y = y
-        self.x = x
+        Startx = ((WINWIDTH // 2) // snakeBoxSize) * snakeBoxSize
+        Starty = ((WINHEIGHT // 2) // snakeBoxSize) * snakeBoxSize
+        self.snakebody = [(Startx, Starty)]
+        self.growing = False
 
     def move(self):
 
         head = self.snakebody[0]
-        
+        headx = head[0]
+        heady = head[1]
+        #head_x, head_y = self.snakebody[0]
+
         if self.direction == "up":
             newHead = (head[0], head[1] + 1 )
-            self.y -= snakeBoxSize
+            heady -= snakeBoxSize
 
         if self.direction == "down":
             newHead = (head[0], head[1] - 1)
-            self.y += snakeBoxSize
+            heady += snakeBoxSize
 
         if self.direction == "left":
             newHead = (head[0] - 1 , head[1])
-            self.x -= snakeBoxSize
+            headx -= snakeBoxSize
 
         if self.direction == "right":
             newHead = (head[0] + 1, head[1])
-            self.x += snakeBoxSize
+            headx += snakeBoxSize
 
         self.snakebody.insert(0, newHead)
-        self.snakebody.pop()
+        #self.snakebody.pop()
+
+        # if self.growing == False:
+        #     self.snakebody.pop()
+
+        if self.growing:
+            self.growing = False
+        else:
+            self.snakebody.pop()
 
     def grow(self):
 
-        self.snakebody.insert(0, list(head))
+        #self.snakebody.insert(0, list(head))
+        self.growing = True
 
-bob = Snake(snakehead, "left", 365, 265)
+bob = Snake("left")
 
 # class Food:
 #     def __init__(self, foodSpawn):
@@ -103,17 +118,32 @@ while RUNNING:
 
     bob.move()
 
-    if bob.x == foodSpawn[0] and bob.y == foodSpawn[1]:
+    
+    head = bob.snakebody[0]
+
+    if food == head:
         score += 1
         bob.grow()
+        food = spawnfood() 
 
-    if bob.x not in range(0, WINWIDTH) or bob.y not in range(0, WINHEIGHT):
-        RUNNING = False
+    # if bob.x == foodSpawn[0] and bob.y == foodSpawn[1]:
+    #     score += 1
+    #     bob.grow()
+
+    # if bob.x not in range(0, WINWIDTH) or bob.y not in range(0, WINHEIGHT):
+    #     RUNNING = False
+
+
 
 
     GAMEWIN.fill((255, 255, 255))
-    pygame.draw.rect(GAMEWIN, green, pygame.Rect(bob.x, bob.y, snakeBoxSize, snakeBoxSize))
-    pygame.draw.rect(GAMEWIN, red, pygame.Rect(foodSpawn[0], foodSpawn[1], snakeBoxSize, snakeBoxSize))
+    # pygame.draw.rect(GAMEWIN, green, pygame.Rect(bob.x, bob.y, snakeBoxSize, snakeBoxSize))
+
+    for segment in bob.snakebody:
+        pygame.draw.rect(GAMEWIN, green, pygame.Rect(segment[0], segment[1], snakeBoxSize, snakeBoxSize))
+
+
+    pygame.draw.rect(GAMEWIN, red, pygame.Rect(food[0], food[1], snakeBoxSize, snakeBoxSize))
     pygame.display.update()
 
     fpsController.tick(difficulty)
