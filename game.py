@@ -7,7 +7,7 @@ score = 0
 
 snakeBoxSize = 25
 
-difficulty = 10
+difficulty = 5
 
 fpsController = pygame.time.Clock()
 
@@ -45,19 +45,19 @@ class Snake:
         #head_x, head_y = self.snakebody[0]
 
         if self.direction == "up":
-            newHead = (head[0], head[1] + 1 )
+            newHead = (head[0], head[1] - snakeBoxSize)
             heady -= snakeBoxSize
 
         if self.direction == "down":
-            newHead = (head[0], head[1] - 1)
+            newHead = (head[0], head[1] + snakeBoxSize)
             heady += snakeBoxSize
 
         if self.direction == "left":
-            newHead = (head[0] - 1 , head[1])
+            newHead = (head[0] - snakeBoxSize , head[1])
             headx -= snakeBoxSize
 
         if self.direction == "right":
-            newHead = (head[0] + 1, head[1])
+            newHead = (head[0] + snakeBoxSize, head[1])
             headx += snakeBoxSize
 
         self.snakebody.insert(0, newHead)
