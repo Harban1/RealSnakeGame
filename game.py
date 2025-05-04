@@ -136,12 +136,13 @@ def gameLoop():
 
         fpsController.tick(difficulty)
 
-        return score
+    return score
 
 def main():
     highscore = 0
     while True:
         result = gameLoop()
+        pygame.quit()
         if result is None:
             break
 
