@@ -1,9 +1,9 @@
 import pygame, random
 pygame.init()
-# 10 % 3 = 1
-# 10 // 3 = 3
 
-score = 0 
+green = (0, 255, 0)
+red = (255, 0, 0)
+black = (0, 0, 0)
 
 snakeBoxSize = 50
 
@@ -11,23 +11,28 @@ difficulty = 2
 
 fpsController = pygame.time.Clock()
 
+direction = "left"
+
+fontLarge = pygame.font.SysFont(None, 72)
+
+fontSmall = pygame.font.SysFont(None, 36)
+
 WINWIDTH = 800
 WINHEIGHT = 600
-
-def spawnfood():
-    foodSpawn = [random.randrange(0, (WINWIDTH//snakeBoxSize))*snakeBoxSize  , random.randrange(0, (WINHEIGHT//snakeBoxSize))*snakeBoxSize]
-    return foodSpawn
-
-food = spawnfood()
-
-
 GAMEWIN = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
 pygame.display.set_caption("Snake Game")
 
-green = (0, 255, 0)
-red = (255, 0, 0)
 
-direction = "left"
+def spawnfood():
+    foodx = random.randrange(0, (WINWIDTH//snakeBoxSize))*snakeBoxSize  
+    foody = random.randrange(0, (WINHEIGHT//snakeBoxSize))*snakeBoxSize
+    return (foodx, foody)
+
+
+def drawtext(size, colour, x, y, text, surface):
+    textObject = size.render(text, True, colour)
+    textRect = textObject.get_rect(center = (x, y))
+    surface.blit(textObject, textRect)
 
 class Snake:
     def __init__(self, direction):
@@ -76,76 +81,72 @@ class Snake:
         #self.snakebody.insert(0, list(head))
         self.growing = True
 
-bob = Snake("left")
+def gameLoop():
 
-# class Food:
-#     def __init__(self, foodSpawn):
-#         self.foodSpawn = foodSpawn
+    bob = Snake(direction)
 
-    
+    food = spawnfood()
 
-RUNNING = True
-while RUNNING:
+    score = 0
 
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                print("The up arrow key has been pressed")
-                bob.direction = "up"
-                # bob.move()
+    RUNNING = True
+    while RUNNING:
 
-            if event.key == pygame.K_DOWN:
-                print("The down arrow key has been pressed")
-                bob.direction = "down"
-                # bob.move()
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    bob.direction = "up"
+                    
+                if event.key == pygame.K_DOWN:
+                    bob.direction = "down"
+                   
+                if event.key == pygame.K_RIGHT:
+                    bob.direction = "right"
+                    
+                if event.key == pygame.K_LEFT:
+                    bob.direction = "left"
+                   
+                if event.key == pygame.K_ESCAPE:
+                    RUNNING = False
 
-            if event.key == pygame.K_RIGHT:
-                print("The right arrow key has been pressed")
-                bob.direction = "right"
-                # bob.move()
-
-
-            if event.key == pygame.K_LEFT:
-                print("The left arrow key has been pressed")
-                bob.direction = "left"
-                # bob.move()
-
-            if event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
                 RUNNING = False
 
-        if event.type == pygame.QUIT:
+        bob.move()
+
+        head = bob.snakebody[0]
+
+        if food == head:
+            score += 1
+            bob.grow()
+            food = spawnfood() 
+
+        if head[0] not in range(0, WINWIDTH) or head[1] not in range(0, WINHEIGHT):
             RUNNING = False
 
-    bob.move()
+        GAMEWIN.fill((255, 255, 255))
 
-    
-    head = bob.snakebody[0]
+        for segment in bob.snakebody:
+            pygame.draw.rect(GAMEWIN, green, pygame.Rect(segment[0], segment[1], snakeBoxSize, snakeBoxSize))
 
-    if food[0] == head:
-        score += 1
-        bob.grow()
-        food = spawnfood() 
+        pygame.draw.rect(GAMEWIN, red, pygame.Rect(food[0], food[1], snakeBoxSize, snakeBoxSize))
+        drawtext(fontSmall, black, 70, 25, f"Score: {score}", GAMEWIN)
 
-    # if bob.x == foodSpawn[0] and bob.y == foodSpawn[1]:
-    #     score += 1
-    #     bob.grow()
+        pygame.display.update()
 
-    # if bob.x not in range(0, WINWIDTH) or bob.y not in range(0, WINHEIGHT):
-    #     RUNNING = False
+        fpsController.tick(difficulty)
 
+        return score
 
-
-
-    GAMEWIN.fill((255, 255, 255))
-    # pygame.draw.rect(GAMEWIN, green, pygame.Rect(bob.x, bob.y, snakeBoxSize, snakeBoxSize))
-
-    for segment in bob.snakebody:
-        pygame.draw.rect(GAMEWIN, green, pygame.Rect(segment[0], segment[1], snakeBoxSize, snakeBoxSize))
+def main():
+    highscore = 0
+    while True:
+        result = gameLoop()
+        if result is None:
+            break
 
 
-    pygame.draw.rect(GAMEWIN, red, pygame.Rect(food[0], food[1], snakeBoxSize, snakeBoxSize))
-    pygame.display.update()
+    pygame.quit()
 
-    fpsController.tick(difficulty)
-
-pygame.quit()
+if __name__ == "__main__":
+    main()
