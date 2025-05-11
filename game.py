@@ -4,10 +4,11 @@ pygame.init()
 green = (0, 255, 0)
 red = (255, 0, 0)
 black = (0, 0, 0)
+white = (255, 255, 255)
 
-snakeBoxSize = 50
+snakeBoxSize = 25
 
-difficulty = 2
+difficulty = 5
 
 fpsController = pygame.time.Clock()
 
@@ -29,8 +30,8 @@ def spawnfood():
     return (foodx, foody)
 
 
-def drawtext(size, colour, x, y, text, surface):
-    textObject = size.render(text, True, colour)
+def drawtext(font, colour, x, y, text, surface):
+    textObject = font.render(text, True, colour)
     textRect = textObject.get_rect(center = (x, y))
     surface.blit(textObject, textRect)
 
@@ -57,7 +58,7 @@ class Snake:
             newHead = (head[0], head[1] + snakeBoxSize)
             heady += snakeBoxSize
 
-        if self.direction == "left":
+        if self.direction == "left" :
             newHead = (head[0] - snakeBoxSize , head[1])
             headx -= snakeBoxSize
 
@@ -138,10 +139,38 @@ def gameLoop():
 
     return score
 
+def gameOver(score, highscore):
+    while True:
+       GAMEWIN.fill(black)
+       drawtext(fontLarge, white, WINWIDTH//2, WINHEIGHT//2 - 60, "GAME OVER", GAMEWIN)
+       drawtext(fontSmall, white, WINWIDTH//2, WINHEIGHT//2, f"score: {score}  highscore: {highscore}", GAMEWIN)
+
+       playButton = pygame.Rect(WINWIDTH//2 - 100, WINHEIGHT//2 + 100, 200, 50)
+       quitButton = pygame.Rect(WINWIDTH//2 - 100, WINHEIGHT//2 + 170, 200, 50)
+       pygame.draw.rect(GAMEWIN, white, playButton)
+       pygame.draw.rect(GAMEWIN, white, quitButton)
+
+       drawtext(fontSmall, black, playButton.centerx, playButton.centery, "PLAY AGAIN", GAMEWIN)
+       drawtext(fontSmall, black, quitButton.centerx, quitButton.centery, "QUIT", GAMEWIN)
+
+       pygame.display.update()
+       for event in pygame.event.get():
+           if event.type == pygame.QUIT:
+               return False 
+           if event.type == pygame.MOUSEBUTTONDOWN:
+               mx, my = event.pos()
+               if playButton.collidepoint(mx, my):
+                   result = gameLoop()
+               if quitButton.collidepoint(mx, my):
+                   return False 
+              
+
+
 def main():
     highscore = 0
     while True:
         result = gameLoop()
+        gameOver(result, highscore)
         pygame.quit()
         if result is None:
             break
