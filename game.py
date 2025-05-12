@@ -9,7 +9,7 @@ lightblue = (91, 211, 245)
 
 snakeBoxSize = 25
 
-difficulty = 5
+difficulty = 1
 
 fpsController = pygame.time.Clock()
 
@@ -159,23 +159,27 @@ def gameOver(score, highscore):
            if event.type == pygame.QUIT:
                return False 
            if event.type == pygame.MOUSEBUTTONDOWN:
-               mx, my = event.pos()
+               mx, my = event.pos
                if playButton.collidepoint(mx, my):
                    result = gameLoop()
                if quitButton.collidepoint(mx, my):
                    return False 
               
-def startscreen():
+def startscreen(difficulty):
     while True:
         GAMEWIN.fill(lightblue)
         drawtext(fontLarge, white, WINWIDTH//2, WINHEIGHT//2 - 60, "SNAKE GAME !!", GAMEWIN)
+
         playButton =  pygame.Rect(WINWIDTH//2 - 100, WINHEIGHT//2 + 100, 200, 50)
         pygame.draw.rect(GAMEWIN, white, playButton)
         drawtext(fontSmall, black, playButton.centerx, playButton.centery, "PLAY", GAMEWIN)
+
+        
+
         pygame.display.update()
         for event in pygame.event.get():
            if event.type == pygame.MOUSEBUTTONDOWN:
-               mx, my = event.pos()
+               mx, my = event.pos
                if playButton.collidepoint(mx, my):
                    result = gameLoop()
                    return result
@@ -186,7 +190,7 @@ def main():
     highscore = 0
     while True:
         result = startscreen()
-        # result = gameLoop()
+        #result = gameLoop()
         gameOver(result, highscore)
         pygame.quit()
         if result is None:
