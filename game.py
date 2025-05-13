@@ -9,11 +9,11 @@ lightblue = (91, 211, 245)
 
 snakeBoxSize = 25
 
-difficulty = 1
+difficulty = 5
 
 fpsController = pygame.time.Clock()
 
-direction = "left"
+direction = "nothing"
 
 fontLarge = pygame.font.SysFont(None, 72)
 
@@ -39,9 +39,9 @@ def drawtext(font, colour, x, y, text, surface):
 class Snake:
     def __init__(self, direction):
         self.direction = direction
-        Startx = ((WINWIDTH // 2) // snakeBoxSize) * snakeBoxSize
-        Starty = ((WINHEIGHT // 2) // snakeBoxSize) * snakeBoxSize
-        self.snakebody = [(Startx, Starty)]
+        self.Startx = ((WINWIDTH // 2) // snakeBoxSize) * snakeBoxSize
+        self.Starty = ((WINHEIGHT // 2) // snakeBoxSize) * snakeBoxSize
+        self.snakebody = [(self.Startx, self.Starty)]
         self.growing = False
 
     def move(self):
@@ -49,6 +49,7 @@ class Snake:
         head = self.snakebody[0]
         headx = head[0]
         heady = head[1]
+        newHead = (self.Startx, self.Starty)
         #head_x, head_y = self.snakebody[0]
 
         if self.direction == "up":
@@ -165,7 +166,7 @@ def gameOver(score, highscore):
                if quitButton.collidepoint(mx, my):
                    return False 
               
-def startscreen(difficulty):
+def startscreen():
     while True:
         GAMEWIN.fill(lightblue)
         drawtext(fontLarge, white, WINWIDTH//2, WINHEIGHT//2 - 60, "SNAKE GAME !!", GAMEWIN)
