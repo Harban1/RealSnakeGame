@@ -9,7 +9,7 @@ lightblue = (91, 211, 245)
 
 snakeBoxSize = 25
 
-difficulty = 1
+# difficulty = 5
 
 fpsController = pygame.time.Clock()
 
@@ -83,7 +83,7 @@ class Snake:
         #self.snakebody.insert(0, list(head))
         self.growing = True
 
-def gameLoop():
+def gameLoop(difficulty):
 
     bob = Snake(direction)
 
@@ -126,7 +126,7 @@ def gameLoop():
         if head[0] not in range(0, WINWIDTH) or head[1] not in range(0, WINHEIGHT):
             RUNNING = False
 
-        GAMEWIN.fill((255, 255, 255))
+        GAMEWIN.fill(white)
 
         for segment in bob.snakebody:
             pygame.draw.rect(GAMEWIN, green, pygame.Rect(segment[0], segment[1], snakeBoxSize, snakeBoxSize))
@@ -161,39 +161,86 @@ def gameOver(score, highscore):
            if event.type == pygame.MOUSEBUTTONDOWN:
                mx, my = event.pos
                if playButton.collidepoint(mx, my):
-                   result = gameLoop()
+                   return True
                if quitButton.collidepoint(mx, my):
                    return False 
               
-def startscreen(difficulty):
+def startscreen():
+    """
+    display start screen
+    shows player differnt levels
+    3 keys for different difficulties, when you press game starts
+    """
+
+
+
     while True:
         GAMEWIN.fill(lightblue)
         drawtext(fontLarge, white, WINWIDTH//2, WINHEIGHT//2 - 60, "SNAKE GAME !!", GAMEWIN)
 
-        playButton =  pygame.Rect(WINWIDTH//2 - 100, WINHEIGHT//2 + 100, 200, 50)
-        pygame.draw.rect(GAMEWIN, white, playButton)
-        drawtext(fontSmall, black, playButton.centerx, playButton.centery, "PLAY", GAMEWIN)
+        # playButton =  pygame.Rect(WINWIDTH//2 - 100, WINHEIGHT//2 + 100, 200, 50)
+        # pygame.draw.rect(GAMEWIN, white, playButton)
+        # drawtext(fontSmall, black, playButton.centerx, playButton.centery, "PLAY", GAMEWIN)
 
-        
+        drawtext(fontSmall, white, WINWIDTH//2, WINHEIGHT//2 - 20, "Select difficulty: ", GAMEWIN)
+        drawtext(fontSmall, white, WINWIDTH//2, WINHEIGHT//2 + 40, "Press 1 for easy ", GAMEWIN)
+        drawtext(fontSmall, white, WINWIDTH//2, WINHEIGHT//2 + 70, "Press 2 for medium ", GAMEWIN)
+        drawtext(fontSmall, white, WINWIDTH//2, WINHEIGHT//2 + 100, "Press 3 for hard ", GAMEWIN)
 
         pygame.display.update()
+
         for event in pygame.event.get():
-           if event.type == pygame.MOUSEBUTTONDOWN:
-               mx, my = event.pos
-               if playButton.collidepoint(mx, my):
-                   result = gameLoop()
-                   return result
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return None
+            
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_1:
+                    difficulty = 3 
+                    return difficulty
+                
+                elif event.key == pygame.K_2:
+                    difficulty = 5 
+                    return difficulty
+                
+                elif event.key == pygame.K_3:
+                    difficulty = 7
+                    return difficulty
+                
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    return None
+
+
 
 
 
 def main():
     highscore = 0
-    while True:
-        result = startscreen()
-        #result = gameLoop()
-        gameOver(result, highscore)
+
+    difficulty = startscreen()
+
+    if difficulty == None:
         pygame.quit()
+    
+    while True:
+        result = gameLoop(difficulty)
+
         if result is None:
+            break
+
+        if result > highscore:
+            highscore = result
+
+        playagain = gameOver(result, highscore)
+
+        if not playagain:
+            break
+
+        difficulty = startscreen()
+
+        if difficulty == None:
             break
 
 
